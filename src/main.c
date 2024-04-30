@@ -30,6 +30,7 @@
 #define STLINK_PID 0x3748
 #define STLINK_PIDV21 0x374b
 #define STLINK_PIDV21_MSD 0x3752
+#define STLINK_V3EC       0x3754
 #define STLINK_PIDV3_MSD  0x374e
 #define STLINK_PIDV3      0x374f
 #define STLINK_PIDV3_BL   0x374d
@@ -135,6 +136,7 @@ rescan:
 	    fprintf(stderr, "StlinkV3 Bootloader found\n");
 	    break;
 	case STLINK_PIDV21:
+	case STLINK_V3EC:
 	case STLINK_PIDV21_MSD:
 	case STLINK_PIDV3_MSD:
 	case STLINK_PIDV3:
@@ -209,7 +211,8 @@ rescan:
   printf("Current mode : %d\n", res);
 
   if (res & 0xfffc) {
-    printf("ST-Link dongle is not in the correct mode. Please unplug and plug the dongle again.\n");
+    printf("ST-Link dongle has crypto bootloader. Restarting ST application.\n");
+    stlink_exit_dfu(&info);
     libusb_release_interface(info.stinfo_dev_handle, 0);
     return EXIT_SUCCESS;
   }
