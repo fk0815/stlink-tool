@@ -1,6 +1,6 @@
 /*
   Copyright (c) 2018 Jean THOMAS.
-  
+
   Permission is hereby granted, free of charge, to any person obtaining
   a copy of this software and associated documentation files (the "Software"),
   to deal in the Software without restriction, including without limitation
@@ -9,7 +9,7 @@
   is furnished to do so, subject to the following conditions:
   The above copyright notice and this permission notice shall be included in
   all copies or substantial portions of the Software.
-  
+
   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
   EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
   OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
@@ -22,7 +22,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <fcntl.h>
-#include <sys/types.h> 
+#include <sys/types.h>
 #include <sys/stat.h>
 #include <sys/mman.h>
 #include <unistd.h>
@@ -371,7 +371,7 @@ int stlink_dfu_status(struct STLinkInfo *info, struct DFUStatus *status) {
   status->bwPollTimeout = data[1] | data[2] << 8 | data[3] << 16;
   status->bState = data[4];
   status->iString = data[5];
-  
+
   return 0;
 }
 
@@ -430,7 +430,7 @@ int stlink_flash(struct STLinkInfo *info, const char *filename) {
     fprintf(stderr, "File opening failed\n");
     return -1;
   }
-  
+
   fstat(fd, &firmware_stat);
 
   file_size = firmware_stat.st_size;
@@ -460,7 +460,7 @@ int stlink_flash(struct STLinkInfo *info, const char *filename) {
 	uint32_t address = base_offset + flashed_bytes;
 	uint32_t sector_start[8] = {0x08000000, 0x08004000, 0x08008000, 0x0800C000,
 				    0x08010000, 0x08020000, 0x08040000, 0x08060000};
-	int sector;
+	int sector = 0;
 	int i;
 	for (i = 0; i < 8; i++) {
 	    if (sector_start[i] == address) {
@@ -511,12 +511,12 @@ int stlink_flash(struct STLinkInfo *info, const char *filename) {
 int stlink_exit_dfu(struct STLinkInfo *info) {
   unsigned char data[16];
   int rw_bytes, res;
-  
+
   memset(data, 0, sizeof(data));
-  
+
   data[0] = ST_DFU_MAGIC;
   data[1] = DFU_EXIT;
-  
+
   res = libusb_bulk_transfer(info->stinfo_dev_handle,
 			     info->stinfo_ep_out,
 			     data,
